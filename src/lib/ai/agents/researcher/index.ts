@@ -18,7 +18,7 @@ export const create = () => {
 			: undefined,
 		tools: [
 			webSearchTool({
-				searchContextSize: "low",
+				searchContextSize: "high",
 				userLocation: geo
 					? {
 							type: "approximate",
