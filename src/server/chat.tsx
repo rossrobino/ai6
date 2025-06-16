@@ -58,8 +58,6 @@ export const action = new ovr.Action("/chat", async (c) => {
 			state: z.state(),
 			/** Any interruptions that were approved */
 			approval: z.interruptions(),
-			/** All interruptions - difference of this and approved are the rejected */
-			interruption: z.interruptions(),
 		})
 		.parse(await c.req.formData());
 
@@ -86,15 +84,20 @@ export const action = new ovr.Action("/chat", async (c) => {
 					form.id = undefined; // use the run state instead
 					stateOrInput = await RunState.fromString(triageAgent, form.state);
 
+					/** All interruptions - difference of this and approved are the rejected */
+					const interruptions = z
+						.array(z.interruption())
+						.parse(stateOrInput.getInterruptions());
+
 					for (const approval of form.approval) {
 						stateOrInput.approve(
 							new RunToolApprovalItem(approval.rawItem, approval.agent),
 						);
 					}
 
-					if (form.approval.length < form.interruption.length) {
+					if (form.approval.length < interruptions.length) {
 						const approvedIds = form.approval.map((int) => int.rawItem.id);
-						const rejections = form.interruption.filter(
+						const rejections = interruptions.filter(
 							(int) => !approvedIds.includes(int.rawItem.id),
 						);
 
@@ -218,7 +221,8 @@ export const action = new ovr.Action("/chat", async (c) => {
 											}
 										}
 									}
-								} else if (event.type === "run_item_stream_event") {
+								} else {
+									// event.type === "run_item_stream_event"
 									if (event.item.type === "tool_approval_item") {
 										interruptions.push(event.item);
 									}

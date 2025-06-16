@@ -32,8 +32,6 @@ const Approval = ({ interruption }: { interruption: RunToolApprovalItem }) => {
 					{interruption.rawItem.name}
 				</div>
 			</label>
-
-			<input type="hidden" name="interruption" value={value} />
 		</div>
 	);
 };
