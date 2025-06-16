@@ -1,4 +1,5 @@
 import * as echarts from "echarts";
+import * as ovr from "ovr";
 import * as z from "zod/v4";
 
 export * from "zod/v4";
@@ -98,3 +99,5 @@ export const state = () =>
 			if (!str) return null;
 			return removeDoubleEscaped(str);
 		});
+
+export const escape = () => z.string().transform((s) => ovr.escape(s));
