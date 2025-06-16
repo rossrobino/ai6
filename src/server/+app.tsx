@@ -1,13 +1,13 @@
-import { csrf } from "@/lib/csrf";
+import { origin } from "@/lib/constants";
 import * as z from "@/lib/schema";
 import * as chat from "@/server/chat";
 import * as home from "@/server/home";
 import { Layout } from "@/server/layout";
 import { BackButton } from "@/ui/back-button";
 import { html } from "client:page";
-import { App } from "ovr";
+import * as ovr from "ovr";
 
-const app = new App();
+const app = new ovr.App();
 
 app.base = html;
 
@@ -52,17 +52,17 @@ app.error = (c, error) => {
 	c.html(defaultMessage, 500);
 };
 
+app.use(ovr.csrf({ origin }), (c, next) => {
+	c.layout(Layout);
+	return next();
+});
+
 app.add(home, chat);
 
 if (import.meta.env.DEV) {
 	const test = await import("@/server/test");
 	app.add(test);
 }
-
-app.use(csrf, (c, next) => {
-	c.layout(Layout);
-	return next();
-});
 
 app.prerender = [home.page.pattern];
 

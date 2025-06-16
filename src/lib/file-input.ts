@@ -2,7 +2,6 @@ import * as ai from "@/lib/ai";
 import * as format from "@/lib/format";
 import * as mime from "@/lib/mime";
 import type { AgentInputItem } from "@openai/agents-core";
-import * as ovr from "ovr";
 
 export const fileInput = async (files: File[]) => {
 	const input: AgentInputItem[] = [];
@@ -33,17 +32,12 @@ export const fileInput = async (files: File[]) => {
 
 			const { value } = await mammoth.extractRawText({ arrayBuffer });
 
-			input.push({
-				role: "system",
-				content: ovr.escape(`**${file.name}**\n\n${value}`),
-			});
+			input.push({ role: "system", content: `**${file.name}**\n\n${value}` });
 		} else {
 			// fallback to text
 			input.push({
 				role: "system",
-				content: ovr.escape(
-					`**${file.name}**\n\n${format.toMdCodeBlock(file.name.split(".").at(-1), await file.text())}`,
-				),
+				content: `**${file.name}**\n\n${format.toMdCodeBlock(file.name.split(".").at(-1), await file.text())}`,
 			});
 		}
 	};

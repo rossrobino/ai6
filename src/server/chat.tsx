@@ -37,7 +37,7 @@ export const action = new ovr.Action("/chat", async (c) => {
 			/** Previously generated title */
 			title: z.string().nullable(),
 			/** The user's current text message */
-			text: z.escape(),
+			text: z.string(),
 			/** Image URL */
 			image: z.httpUrl(),
 			/** Website URL to render */

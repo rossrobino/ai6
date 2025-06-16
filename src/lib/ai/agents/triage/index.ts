@@ -13,6 +13,7 @@ export const create = (dataset: Dataset) =>
 		name: "Triage",
 		instructions: promptWithHandoffInstructions(instructions),
 		model: "gpt-4.1-nano",
+		modelSettings: { toolChoice: "required" },
 		handoffs: [
 			assistant.create(),
 			data.create(dataset),
