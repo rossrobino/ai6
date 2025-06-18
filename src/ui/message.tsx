@@ -4,6 +4,7 @@ import * as z from "@/lib/schema";
 import type { AgentInputItem } from "@openai/agents-core";
 import { clsx } from "clsx";
 import type * as ai from "openai";
+import * as ovr from "ovr";
 
 export const Message = (props: {
 	input:
@@ -24,6 +25,43 @@ export const Message = (props: {
 
 		if (!content) return;
 
+		const gen = processor.generate(
+			(function* () {
+				if (typeof content === "string") yield content;
+				else {
+					for (const c of content) {
+						if (c.type === "input_text" || c.type === "output_text") {
+							yield c.text;
+						} else if (c.type === "input_image") {
+							if ("image" in c) {
+								const { image } = c;
+								if (typeof image === "string") {
+									yield image;
+								} else {
+									yield image.id;
+								}
+							} else {
+								yield c.image_url ?? "Image";
+							}
+						} else if (c.type === "input_file") {
+							if ("file" in c) {
+								const { file } = c;
+								if (typeof file === "string") {
+									yield file;
+								} else {
+									yield file.id;
+								}
+							} else {
+								yield c.filename ?? "File";
+							}
+						}
+
+						yield "\n\n";
+					}
+				}
+			})(),
+		);
+
 		return (
 			<div class={clsx("flex pb-12", !assistant && "justify-end")}>
 				<div
@@ -35,42 +73,9 @@ export const Message = (props: {
 					)}
 					style={`view-transition-name: m-${index}`}
 				>
-					{processor.generate(
-						(function* () {
-							if (typeof content === "string") yield content;
-							else {
-								for (const c of content) {
-									if (c.type === "input_text" || c.type === "output_text") {
-										yield c.text;
-									} else if (c.type === "input_image") {
-										if ("image" in c) {
-											const { image } = c;
-											if (typeof image === "string") {
-												yield image;
-											} else {
-												yield image.id;
-											}
-										} else {
-											yield c.image_url ?? "Image";
-										}
-									} else if (c.type === "input_file") {
-										if ("file" in c) {
-											const { file } = c;
-											if (typeof file === "string") {
-												yield file;
-											} else {
-												yield file.id;
-											}
-										} else {
-											yield c.filename ?? "File";
-										}
-									}
-
-									yield "\n\n";
-								}
-							}
-						})(),
-					)}
+					{async function* () {
+						for await (const str of gen) yield new ovr.Chunk(str, true);
+					}}
 				</div>
 			</div>
 		);

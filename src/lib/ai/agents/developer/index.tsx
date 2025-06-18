@@ -87,7 +87,7 @@ export const create = () =>
 							.map((v) => {
 								if (v.status === "fulfilled") {
 									if (v.value?.code) {
-										v.value.code = ovr.escape(v.value.code);
+										v.value.code = ovr.Chunk.escape(v.value.code);
 										return v.value;
 									}
 								}

@@ -1,6 +1,5 @@
 import type { Dataset } from "@/lib/types";
 import { Table } from "@/ui/table";
-import * as ovr from "ovr";
 
 export const ExistingData = (props: { dataset: Dataset }) => {
 	return (
@@ -16,7 +15,7 @@ export const ExistingData = (props: { dataset: Dataset }) => {
 					yield (
 						<input
 							type="hidden"
-							value={ovr.escape(JSON.stringify(props.dataset), true)}
+							value={JSON.stringify(props.dataset)}
 							name="existing"
 						></input>
 					);

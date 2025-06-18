@@ -1,6 +1,6 @@
 import { create } from "@/lib/ai/agents/title";
 import { run } from "@openai/agents";
-import { Context, escape } from "ovr";
+import { Context } from "ovr";
 
 export const generateTitle = (title: string | null, text: string | null) => {
 	const c = Context.get();
@@ -13,5 +13,5 @@ const _generateTitle = async (title: string | null, text: string | null) => {
 
 	const result = await run(create(), text);
 
-	return escape(result.finalOutput);
+	return result.finalOutput;
 };

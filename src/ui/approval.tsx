@@ -1,5 +1,4 @@
 import type { RunToolApprovalItem } from "@openai/agents";
-import * as ovr from "ovr";
 
 export const Approvals = ({
 	interruptions,
@@ -22,12 +21,14 @@ export const Approvals = ({
 };
 
 const Approval = ({ interruption }: { interruption: RunToolApprovalItem }) => {
-	const value = ovr.escape(JSON.stringify(interruption), true);
-
 	return (
 		<div class="flex items-center gap-3" aria-label="approval">
 			<label class="flex items-center gap-2">
-				<input type="checkbox" name="approval" value={value} />
+				<input
+					type="checkbox"
+					name="approval"
+					value={JSON.stringify(interruption)}
+				/>
 				<div class="badge secondary font-mono font-light">
 					{interruption.rawItem.name}
 				</div>

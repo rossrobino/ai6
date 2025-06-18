@@ -1,7 +1,6 @@
 import * as colors from "@/lib/colors";
 import { defu } from "defu";
 import type * as echarts from "echarts";
-import * as ovr from "ovr";
 
 export const Chart = (props: { options: echarts.EChartsOption }) => {
 	const options = defu(props.options, {
@@ -25,7 +24,7 @@ export const Chart = (props: { options: echarts.EChartsOption }) => {
 	return (
 		<e-chart
 			class="mt-12 mb-8 block h-96 w-full"
-			options={ovr.escape(JSON.stringify(options), true)}
+			options={JSON.stringify(options)}
 		>
 			<noscript class="text-muted-foreground">
 				JavaScript is required to view charts.

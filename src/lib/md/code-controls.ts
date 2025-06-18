@@ -1,6 +1,5 @@
-import * as svg from "@/ui/svg";
 import type MarkdownIt from "markdown-it";
-import { escape } from "ovr";
+import * as ovr from "ovr";
 
 export const codeControls = async (md: MarkdownIt) => {
 	const defaultFence =
@@ -20,7 +19,7 @@ export const codeControls = async (md: MarkdownIt) => {
 		}
 
 		const fileName = `code.${lang ? lang : "txt"}`;
-		const escaped = escape(token.content, true);
+		const escaped = ovr.Chunk.escape(token.content, true);
 		const encoded = encodeURIComponent(token.content);
 
 		return /* html */ `
@@ -45,9 +44,7 @@ const Download = (props: { fileName: string; encoded: string }) =>
 	aria-label="Download"
 	download="${props.fileName}"
 	href="data:text/plain;charset=utf-8,${props.encoded}"
->
-	${svg.FolderDown()}
-</a>
+><span class="icon-[lucide--folder-down]"></span></a>
 `.trim();
 
 const Share = (value: string) =>
@@ -59,8 +56,8 @@ const Share = (value: string) =>
 		class="icon bg-base-800 text-base-200 shadow-none"
 		aria-label="copy code to clipboard"
 	>
-		<span data-content class="contents">${svg.Copy()}</span>
-		<template data-swap>${svg.CopyComplete()}</template>
+		<span data-content class="contents"><span class="icon-[lucide--clipboard-copy]"></span></span>
+		<template data-swap><span class="icon-[lucide--clipboard-check]"></span></template>
 	</button>
 </drab-share>
 `.trim();

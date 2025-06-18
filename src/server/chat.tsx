@@ -144,110 +144,114 @@ export const action = new ovr.Action("/chat", async (c) => {
 					previousResponseId: form.id,
 				});
 
-				yield* processor.generate(
-					(async function* () {
-						const interruptions: RunToolApprovalItem[] = [];
+				const gen = async function* () {
+					const interruptions: RunToolApprovalItem[] = [];
 
-						for await (const event of result) {
-							if (event.type === "raw_model_stream_event") {
-								// raw events from the model
-								if (event.data.type === "output_text_delta") {
-									yield event.data.delta;
-								} else if (event.data.type === "model") {
-									const modelEvent: OpenAI.Responses.ResponseStreamEvent =
-										event.data.event;
+					for await (const event of result) {
+						if (event.type === "raw_model_stream_event") {
+							// raw events from the model
+							if (event.data.type === "output_text_delta") {
+								yield event.data.delta;
+							} else if (event.data.type === "model") {
+								const modelEvent: OpenAI.Responses.ResponseStreamEvent =
+									event.data.event;
 
-									if (
-										modelEvent.type === "response.web_search_call.in_progress"
-									) {
-										yield* ovr.toGenerator(
-											<NewLines>
-												<WebSearchCall />
-											</NewLines>,
-										);
-									}
-								}
-							} else if (event.type == "agent_updated_stream_event") {
-								// agent updated events
-							} else {
-								// Agent SDK specific events
-								if (event.item.type === "handoff_output_item") {
-									const target = event.item.targetAgent;
-									const index = triageAgent.handoffs.findIndex(
-										(agent) => agent === target,
-									);
-
-									yield* ovr.toGenerator(
+								if (
+									modelEvent.type === "response.web_search_call.in_progress"
+								) {
+									yield await ovr.toString(
 										<NewLines>
-											<div class="my-6">
-												<AgentNumberAndName agent={target} index={index} />
-											</div>
+											<WebSearchCall />
 										</NewLines>,
 									);
-								} else if (event.item.type === "tool_call_item") {
-									if (event.item.rawItem.type === "function_call") {
-										try {
-											const args = JSON.parse(event.item.rawItem.arguments);
+								}
+							}
+						} else if (event.type == "agent_updated_stream_event") {
+							// agent updated events
+						} else {
+							// Agent SDK specific events
+							if (event.item.type === "handoff_output_item") {
+								const target = event.item.targetAgent;
+								const index = triageAgent.handoffs.findIndex(
+									(agent) => agent === target,
+								);
 
-											yield toMdCodeBlock(
-												"fn",
-												`${event.item.rawItem.name}(${format.jsFormat(args)})`,
+								yield await ovr.toString(
+									<NewLines>
+										<div class="my-6">
+											<AgentNumberAndName agent={target} index={index} />
+										</div>
+									</NewLines>,
+								);
+							} else if (event.item.type === "tool_call_item") {
+								if (event.item.rawItem.type === "function_call") {
+									try {
+										const args = JSON.parse(event.item.rawItem.arguments);
+
+										yield toMdCodeBlock(
+											"fn",
+											`${event.item.rawItem.name}(${format.jsFormat(args)})`,
+										);
+									} catch (error) {
+										console.error(error);
+									}
+								}
+							} else if (event.item.type === "tool_call_output_item") {
+								if (event.item.rawItem.type === "function_call_result") {
+									const { data } = z
+										.functionOutput()
+										.safeParse(event.item.output);
+
+									if (data) {
+										// additional items to render for the user
+										// from the function result
+										if (data.chartOptions) {
+											yield await ovr.toString(
+												<NewLines>
+													<Chart options={data.chartOptions} />
+												</NewLines>,
 											);
-										} catch (error) {
-											console.error(error);
+										}
+
+										if (data.summary) {
+											yield await ovr.toString(
+												<NewLines>{data.summary}</NewLines>,
+											);
 										}
 									}
-								} else if (event.item.type === "tool_call_output_item") {
-									if (event.item.rawItem.type === "function_call_result") {
-										const { data } = z
-											.functionOutput()
-											.safeParse(event.item.output);
-
-										if (data) {
-											// additional items to render for the user
-											// from the function result
-											if (data.chartOptions) {
-												yield* ovr.toGenerator(
-													<NewLines>
-														<Chart options={data.chartOptions} />
-													</NewLines>,
-												);
-											}
-
-											if (data.summary) {
-												yield* ovr.toGenerator(
-													<NewLines>{data.summary}</NewLines>,
-												);
-											}
-										}
-									}
-								} else {
-									// event.type === "run_item_stream_event"
-									if (event.item.type === "tool_approval_item") {
-										interruptions.push(event.item);
-									}
+								}
+							} else {
+								// event.type === "run_item_stream_event"
+								if (event.item.type === "tool_approval_item") {
+									interruptions.push(event.item);
 								}
 							}
 						}
+					}
 
-						if (interruptions.length) {
-							// ask for approvals and send serialized state
-							yield* ovr.toGenerator(
-								<NewLines>
-									<Approvals interruptions={interruptions} />
-									{/* don't do this if you want to hide system prompt and other info, it'd be nice to use the previous response id to obtain again. */}
-									<input
-										type="hidden"
-										name="state"
-										value={ovr.escape(JSON.stringify(result.state), true)}
-									/>
-								</NewLines>,
-							);
-						}
+					if (interruptions.length) {
+						// ask for approvals and send serialized state
+						yield await ovr.toString(
+							<NewLines>
+								<Approvals interruptions={interruptions} />
+								{/* don't do this if you want to hide system prompt and other info, it'd be nice to use the previous response id to obtain again. */}
+								<input
+									type="hidden"
+									name="state"
+									value={JSON.stringify(result.state)}
+								/>
+							</NewLines>,
+						);
+					}
 
-						await result.completed;
-					})(),
-				);
+					await result.completed;
+				};
+
+				const htmlGen = processor.generate(gen());
+
+				for await (const str of htmlGen) {
+					yield new ovr.Chunk(str, true);
+				}
 
 				yield (
 					<>
