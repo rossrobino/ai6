@@ -41,7 +41,7 @@ const Attachments = () => {
 	return (
 		<Popover
 			title="Attachments"
-			trigger={{ children: svg.Paperclip, class: "icon secondary" }}
+			trigger={{ children: <svg.Paperclip />, class: "icon secondary" }}
 		>
 			<div className="flex flex-col gap-6">
 				<Dataset />

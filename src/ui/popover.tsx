@@ -10,7 +10,7 @@ export const Popover = (props: PopoverProps) => {
 	const { title, children, trigger, ...rest } = props;
 	const { children: triggerChildren, ...triggerRest } = trigger;
 
-	const id = rest.id ? rest.id : `popover-${generateId()}`;
+	const id = rest.id ?? `popover-${generateId()}`;
 
 	return (
 		<>
