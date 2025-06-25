@@ -26,7 +26,7 @@ const GrepSchema = z
 export const create = () =>
 	new Agent({
 		name: "Software Developer",
-		model: "gpt-4.1-mini",
+		model: "o4-mini",
 		instructions,
 		handoffDescription:
 			"Able to research and access the internet. Excellent at programming and coding, aware of language best practices and modern features. Able to search GitHub using grep.",
