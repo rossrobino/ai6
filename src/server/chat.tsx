@@ -19,14 +19,14 @@ import { WebSearchCall } from "@/ui/web-search-call";
 import {
 	type Agent,
 	type AgentInputItem,
-	Runner,
 	RunState,
 	RunToolApprovalItem,
+	Runner,
 } from "@openai/agents";
 import type { OpenAI } from "openai";
 import * as ovr from "ovr";
 
-export const action = new ovr.Action("/chat", async (c) => {
+export const action = new ovr.Post("/chat", async (c) => {
 	const form = z
 		.formData({
 			/** Previous response ID */
