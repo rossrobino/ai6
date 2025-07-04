@@ -1,5 +1,3 @@
-import "@fontsource-variable/geist";
-import "@fontsource-variable/geist-mono";
 import { inject } from "@vercel/analytics";
 import "drab/editor/define";
 import "drab/prefetch/define";

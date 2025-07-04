@@ -4,7 +4,7 @@ import * as chat from "@/server/chat";
 import * as home from "@/server/home";
 import { Layout } from "@/server/layout";
 import { BackButton } from "@/ui/back-button";
-import { html } from "client:page";
+import { chunk, html } from "client:page";
 import * as ovr from "ovr";
 
 const app = new ovr.App();
@@ -53,7 +53,20 @@ app.error = (c, error) => {
 };
 
 app.use(ovr.csrf({ origin }), (c, next) => {
+	c.head(
+		chunk.src.assets.map((path) => (
+			<link
+				rel="preload"
+				href={`/${path}`}
+				as="font"
+				type="font/woff2"
+				crossorigin
+			/>
+		)),
+	);
+
 	c.layout(Layout);
+
 	return next();
 });
 
