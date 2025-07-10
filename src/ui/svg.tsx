@@ -47,3 +47,5 @@ export const User = () => <span class="icon-[lucide--user]" />;
 export const FileCode = () => <span class="icon-[lucide--file-code]" />;
 
 export const Chevron = () => <span class="icon-[lucide--chevron-down]" />;
+
+export const Newspaper = () => <span class="icon-[lucide--newspaper]" />;

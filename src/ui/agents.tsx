@@ -1,7 +1,9 @@
+import * as info from "@/content/info.md";
 import * as triage from "@/lib/ai/agents/triage";
 import { Popover } from "@/ui/popover";
 import * as svg from "@/ui/svg";
 import { Agent as AgentClass } from "@openai/agents";
+import * as ovr from "ovr";
 
 export const Agents = (props: { agent?: AgentClass }) => {
 	if (!props.agent) props.agent = triage.create([{ home: 0 }]); // to populate agent info
@@ -12,6 +14,10 @@ export const Agents = (props: { agent?: AgentClass }) => {
 			id="agents"
 			trigger={{ children: <svg.BookUser /> }}
 		>
+			<div class="mb-6">{new ovr.Chunk(info.html, true)}</div>
+
+			<hr />
+
 			<div class="grid gap-4">
 				{props.agent.handoffs.map((agent, i) => {
 					if (agent instanceof AgentClass) {
@@ -19,10 +25,6 @@ export const Agents = (props: { agent?: AgentClass }) => {
 					}
 				})}
 			</div>
-			<p class="text-muted-foreground mt-6 mb-0">
-				Submit an idea for another agent or tool on{" "}
-				<a href="https://github.com/rossrobino/ai6/issues/new">GitHub</a>.
-			</p>
 		</Popover>
 	);
 };

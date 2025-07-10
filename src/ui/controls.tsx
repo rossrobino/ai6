@@ -1,11 +1,10 @@
 import { BackButton } from "./back-button";
 import { generateId } from "@/lib/generate-id";
 import { Agents } from "@/ui/agents";
-import { Overview } from "@/ui/overview";
 import { Popover } from "@/ui/popover";
 import * as svg from "@/ui/svg";
 import type { Agent } from "@openai/agents";
-import type { JSX } from "ovr";
+import * as ovr from "ovr";
 
 export const Controls = (props: {
 	store: boolean;
@@ -27,7 +26,6 @@ export const Controls = (props: {
 				)}
 			</div>
 			<div class="flex gap-3">
-				<Overview />
 				<Agents agent={props.agent} />
 				<Attachments />
 				<Temporary store={props.store} />
@@ -43,7 +41,8 @@ const Attachments = () => {
 			title="Attachments"
 			trigger={{ children: <svg.Paperclip />, class: "icon secondary" }}
 		>
-			<div className="flex flex-col gap-6">
+			<div class="grid gap-6">
+				<Context />
 				<Dataset />
 				<Files />
 				<Directory />
@@ -54,10 +53,23 @@ const Attachments = () => {
 	);
 };
 
+const Context = () => (
+	<Input
+		textarea
+		label={{ for: "context", children: "Context" }}
+		input={{
+			name: "context",
+			id: "context",
+			placeholder: "Additional context",
+		}}
+	/>
+);
+
 const Input = (props: {
-	label: JSX.IntrinsicElements["label"];
-	input: JSX.IntrinsicElements["input"];
-	description?: JSX.IntrinsicElements["div"];
+	label: ovr.JSX.IntrinsicElements["label"];
+	input: ovr.JSX.IntrinsicElements["input"];
+	description?: ovr.JSX.IntrinsicElements["div"];
+	textarea?: true;
 }) => {
 	if (props.description) {
 		props.description.id = `desc-${generateId()}`;
@@ -67,7 +79,11 @@ const Input = (props: {
 	return (
 		<div>
 			<label {...props.label} />
-			<input {...props.input} />
+			{props.textarea ? (
+				<textarea {...props.input} />
+			) : (
+				<input {...props.input} />
+			)}
 			{props.description && (
 				<div class="text-base-500 mt-2 text-sm" {...props.description} />
 			)}

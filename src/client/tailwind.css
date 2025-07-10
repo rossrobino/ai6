@@ -168,7 +168,9 @@
 	}
 
 	input,
-	input::placeholder {
+	input::placeholder,
+	textarea,
+	textarea::placeholder {
 		@apply font-light;
 	}
 

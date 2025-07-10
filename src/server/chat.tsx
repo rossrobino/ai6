@@ -42,6 +42,8 @@ export const action = new ovr.Post("/chat", async (c) => {
 			image: z.httpUrl(),
 			/** Website URL to render */
 			website: z.httpUrl(),
+			/** Additional system context */
+			context: z.string(),
 			/** File inputs */
 			files: z.files(),
 			/** Directory inputs */
@@ -121,6 +123,10 @@ export const action = new ovr.Post("/chat", async (c) => {
 							role: "user",
 							content: [{ type: "input_image", image: form.image }],
 						});
+					}
+
+					if (form.context) {
+						stateOrInput.push({ role: "system", content: form.context });
 					}
 
 					stateOrInput.push(
