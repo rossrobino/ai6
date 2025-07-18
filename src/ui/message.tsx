@@ -48,8 +48,10 @@ export const Message = (props: {
 								const { file } = c;
 								if (typeof file === "string") {
 									yield file;
-								} else {
+								} else if ("id" in file) {
 									yield file.id;
+								} else {
+									yield file.url;
 								}
 							} else {
 								yield c.filename ?? "File";
