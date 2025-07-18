@@ -20,7 +20,10 @@ export const Controls = (props: {
 			<div class="flex gap-3">
 				{props.clear && <Clear />}
 				{props.undo && (
-					<BackButton aria-label="Undo last message" class="icon secondary">
+					<BackButton
+						aria-label="Undo last message"
+						class="icon secondary cursor-pointer"
+					>
 						<svg.Undo />
 					</BackButton>
 				)}
