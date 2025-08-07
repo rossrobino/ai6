@@ -2,7 +2,7 @@ import instructions from "@/lib/ai/agents/data/instructions.md?raw";
 import { linspace } from "@/lib/math";
 import * as z from "@/lib/schema";
 import type { Dataset, FunctionOutput } from "@/lib/types";
-import { tool, Agent } from "@openai/agents";
+import { Agent, tool } from "@openai/agents";
 import * as stats from "simple-statistics";
 import * as z3 from "zod";
 
@@ -13,7 +13,7 @@ export const create = (dataset: Dataset) => {
 	const agent = new Agent({
 		name: "Data Scientist",
 		instructions,
-		model: "gpt-4.1-mini",
+		model: "gpt-5-mini",
 		handoffDescription:
 			"Ability access to the user's dataset and run a variety of statistical analyses using it.",
 	});

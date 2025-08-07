@@ -6,15 +6,14 @@ import { clsx } from "clsx";
 import type * as ai from "openai";
 import * as ovr from "ovr";
 
-export const Message = (props: {
+export const Message = ({
+	input,
+}: {
 	input:
 		| AgentInputItem
 		| ai.OpenAI.Responses.ResponseOutputItem
 		| ai.OpenAI.Responses.ResponseInputItem;
-	index: number;
 }) => {
-	const { index, input } = props;
-
 	if (!input.type) input.type = "message";
 
 	if (input.type === "message") {
@@ -73,7 +72,6 @@ export const Message = (props: {
 							"bg-muted border-secondary chat-bubble w-fit min-w-10.5 rounded-md border px-3 py-2 shadow-xs",
 						system && "text-muted-foreground w-full",
 					)}
-					style={`view-transition-name: m-${index}`}
 				>
 					{async function* () {
 						for await (const str of gen) yield new ovr.Chunk(str, true);

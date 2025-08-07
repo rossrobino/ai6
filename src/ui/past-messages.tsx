@@ -6,8 +6,8 @@ export const PastMessages = async (props: { id?: string }) => {
 	if (!props.id) return null;
 
 	return (
-		<Details summary="Previous messages" hover={true}>
-			{async () => {
+		<Details summary="Previous" hover={true}>
+			{async function* () {
 				if (!props.id) return null;
 
 				const [previousInput, latestResponse] = await Promise.all([
@@ -20,9 +20,9 @@ export const PastMessages = async (props: { id?: string }) => {
 					...latestResponse.output,
 				];
 
-				return fetchedInput.map((message, i) => (
-					<Message input={message} index={i} />
-				));
+				for (const message of fetchedInput) {
+					yield <Message input={message} />;
+				}
 			}}
 		</Details>
 	);

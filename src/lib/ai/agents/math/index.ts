@@ -3,7 +3,7 @@ import katex from "@/lib/ai/agents/math/katex.md?raw";
 import * as format from "@/lib/format";
 import * as math from "@/lib/math";
 import type { FunctionOutput } from "@/lib/types";
-import { tool, Agent } from "@openai/agents";
+import { Agent, tool } from "@openai/agents";
 import * as stats from "simple-statistics";
 import * as z3 from "zod";
 
@@ -11,7 +11,7 @@ export const create = () =>
 	new Agent({
 		name: "Mathematician",
 		instructions: instructions + katex,
-		model: "gpt-4.1-mini",
+		model: "gpt-5-mini",
 		handoffDescription: "Has access to the tools to do math precisely.",
 		tools: [
 			tool({

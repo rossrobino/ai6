@@ -13,10 +13,7 @@ export const Controls = (props: {
 	agent?: Agent;
 }) => {
 	return (
-		<div
-			class="my-3 flex flex-wrap-reverse justify-between gap-3"
-			style="view-transition-name: controls"
-		>
+		<div class="my-3 flex flex-wrap-reverse justify-between gap-3">
 			<div class="flex gap-3">
 				{props.clear && <Clear />}
 				{props.undo && (
@@ -176,7 +173,6 @@ const Clear = () => {
 				href="/"
 				class="button icon destructive"
 				aria-label="Clear chat"
-				style="view-transition-name: clear"
 			>
 				<svg.X />
 			</a>

@@ -124,23 +124,6 @@
 		font-variant-numeric: tabular-nums;
 	}
 
-	@view-transition {
-		navigation: auto;
-	}
-
-	::view-transition-group(*) {
-		animation-duration: 400ms;
-		animation-timing-function: ease-in-out;
-	}
-
-	@media (prefers-reduced-motion) {
-		::view-transition-group(*),
-		::view-transition-old(*),
-		::view-transition-new(*) {
-			animation: none !important;
-		}
-	}
-
 	a {
 		@apply font-normal;
 	}

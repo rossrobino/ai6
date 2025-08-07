@@ -1,9 +1,10 @@
 import { toMdCodeBlock } from "@/lib/format";
 import { Agent, webSearchTool } from "@openai/agents";
-import { geolocation, type Geo } from "@vercel/functions";
+import { type Geo, geolocation } from "@vercel/functions";
 import { Context } from "ovr";
 
 export const create = () => {
+	// SOMEHOW THIS IS CALLED OUTSIDE?
 	const c = Context.get();
 	let geo: Geo | null = geolocation(c.req);
 	if (!geo.country) geo = null;

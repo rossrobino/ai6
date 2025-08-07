@@ -22,7 +22,6 @@ export const Input = ({
 				name="text"
 				placeholder="Ask anything"
 				class="bg-muted border-secondary mt-12 h-42 border font-light shadow-xs outline-none"
-				style={`view-transition-name: m-${index}`}
 			></textarea>
 		</drab-editor>
 

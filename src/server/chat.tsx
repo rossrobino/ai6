@@ -10,6 +10,7 @@ import * as z from "@/lib/schema";
 import { AgentNumberAndName } from "@/ui/agents";
 import { Approvals } from "@/ui/approval";
 import { Chart } from "@/ui/chart";
+import { Details } from "@/ui/details";
 import { ExistingData } from "@/ui/existing-data";
 import { Input } from "@/ui/input";
 import { Message } from "@/ui/message";
@@ -135,9 +136,18 @@ export const action = new ovr.Post("/chat", async (c) => {
 						...dataInput,
 					);
 
-					yield stateOrInput.map((inp, i) => (
-						<Message input={inp} index={form.index + i} />
-					));
+					if (stateOrInput.length > 1) {
+						yield (
+							<Details summary="Additional" hover>
+								{stateOrInput.slice(0, -1).map((inp) => (
+									<Message input={inp} />
+								))}
+							</Details>
+						);
+					}
+
+					const latest = stateOrInput.at(-1);
+					if (latest) yield <Message input={latest} />;
 				}
 
 				const runner = new Runner({

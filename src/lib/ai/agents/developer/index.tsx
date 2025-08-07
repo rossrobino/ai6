@@ -2,7 +2,6 @@ import instructions from "@/lib/ai/agents/developer/instructions.md?raw";
 import * as z from "@/lib/schema";
 import type { FunctionOutput } from "@/lib/types";
 import { GrepResults } from "@/ui/grep-result";
-import { webSearchTool } from "@openai/agents";
 import { Agent, tool } from "@openai/agents-core";
 import * as ovr from "ovr";
 import * as z3 from "zod";
@@ -26,12 +25,11 @@ const GrepSchema = z
 export const create = () =>
 	new Agent({
 		name: "Software Developer",
-		model: "gpt-4.1",
+		model: "gpt-5",
 		instructions,
 		handoffDescription:
 			"Excellent at programming and coding, aware of language best practices and modern features. Able to search GitHub using grep.",
 		tools: [
-			webSearchTool({ searchContextSize: "high" }),
 			tool({
 				name: "grep",
 				description:

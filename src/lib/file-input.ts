@@ -42,7 +42,7 @@ export const fileInput = async (files: File[]) => {
 		}
 	};
 
-	await Promise.all(files.map((file) => handleFile(file)));
+	await Promise.all(files.map(handleFile));
 
 	return input;
 };
